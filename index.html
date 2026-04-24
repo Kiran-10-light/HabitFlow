@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Habit Tracker Pro - Complete Analytics Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 16px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .login-box, .dashboard {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 500px;
+            margin: 20px auto;
+        }
+        
+        .dashboard {
+            max-width: 1400px;
+            display: none;
+            padding: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 24px;
+            font-size: 28px;
+        }
+        
+        h2 {
+            color: #667eea;
+            margin: 16px 0 12px 0;
+            font-size: 22px;
+        }
+        
+        h3 {
+            color: #4a5568;
+            margin: 12px 0 8px 0;
+            font-size: 18px;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 14px;
+            margin: 8px 0;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin: 8px 0;
+            transition: all 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        button:active {
+            transform: scale(0.98);
+        }
+        
+        .habit-card {
+            background: #f7f7f7;
+            padding: 16px;
+            margin: 10px 0;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            transition: all 0.3s;
+        }
+        
+        .habit-card > div {
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        
+        .stat-card:active {
+            transform: scale(0.98);
+        }
+        
+        .stat-card h3 {
+            font-size: 13px;
+            opacity: 0.9;
+            color: white;
+            margin-bottom: 8px;
+        }
+        
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 8px 0;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            background: #e2e8f0;
+            color: #4a5568;
+            flex: 1;
+            min-width: 80px;
+            padding: 12px 8px;
+            font-size: 14px;
+        }
+        
+        .nav-btn.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .achievement {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 16px;
+            display: inline-block;
+            width: calc(33% - 8px);
+            margin: 4px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        
+        .achievement:active {
+            transform: scale(0.98);
+        }
+        
+        .complete-btn {
+            background: #48bb78;
+            width: auto;
+            padding: 10px 20px;
+            min-width: 110px;
+        }
+        
+        .complete-btn.completed {
+            background: #c6f6d5;
+            color: #22543d;
+            cursor: default;
+            opacity: 0.7;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 12px;
+            }
+            
+            .dashboard {
+                padding: 12px;
+            }
+            
+            .login-box, .dashboard {
+                padding: 20px;
+                border-radius: 20px;
+            }
+            
+            .achievement {
+                width: calc(50% - 8px);
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .nav-buttons {
+                gap: 6px;
+            }
+            
+            .nav-btn {
+                font-size: 12px;
+                padding: 10px 6px;
+                min-width: 70px;
+            }
+            
+            .habit-card {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .complete-btn {
+                width: 100%;
+            }
+            
+            .stat-card .value {
+                font-size: 28px;
+            }
+            
+            button {
+                padding: 12px;
+            }
+            
+            .flex-stats {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .dashboard-widget {
+                padding: 16px;
+            }
+            
+            .reminder-banner {
+                padding: 12px;
+                margin-bottom: 16px;
+            }
+            
+            .reminder-banner button {
+                margin-top: 10px;
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .achievement {
+                width: 100%;
+            }
+            
+            .achievement div {
+                font-size: 14px;
+            }
+            
+            .analysis-table th, 
+            .analysis-table td {
+                padding: 8px;
+                font-size: 12px;
+            }
+            
+            h2 {
+                font-size: 18px;
+            }
+            
+            h3 {
+                font-size: 16px;
+            }
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 24px;
+            border-radius: 24px;
+            width: 90%;
+            max-width: 500px;
+            margin: 20px;
+        }
+        
+        .message {
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .success {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+        
+        .error {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+        
+        .warning {
+            background: #feebc8;
+            color: #975a16;
+        }
+        
+        .analysis-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .analysis-table th {
+            background: #667eea;
+            color: white;
+            padding: 12px 8px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        
+        .analysis-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 13px;
+        }
+        
+        .completed-cell {
+            color: #48bb78;
+            font-weight: bold;
+        }
+        
+        .missed-cell {
+            color: #f56565;
+            font-weight: bold;
+        }
+        
+        .progress-bar-container {
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 8px;
+            margin: 8px 0;
+        }
+        
+        .progress-bar-fill {
+            background: #48bb78;
+            height: 100%;
+            transition: width 0.5s;
+        }
+        
+        .dashboard-widget {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        
+        .flex-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .badge-gold {
+            background: #fefcbf;
+            color: #975a16;
+        }
+        
+        .reminder-banner {
+            background: linear-gradient(135deg, #f56565 0%, #ed8936 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .reminder-banner.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .reminder-banner h4 {
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        .reminder-banner button {
+            background: white;
+            color: #f56565;
+            margin-top: 10px;
+            width: auto;
+            padding: 8px 16px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .action-buttons button {
+            flex: 1;
+            margin: 0;
+        }
+        
+        .btn-pdf {
+            background: #e53e3e;
+        }
+        
+        .btn-reminder {
+            background: #ed8936;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-in {
+            animation: slideIn 0.4s ease-out;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .mt-2 {
+            margin-top: 8px;
+        }
+        
+        .mb-2 {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Box -->
+        <div id="loginBox" class="login-box">
+            <h1>🎯 HabitFlow Pro</h1>
+            <div id="loginMessage"></div>
+            <input type="text" id="loginName" placeholder="Your Full Name">
+            <input type="email" id="loginEmail" placeholder="Email Address">
+            <input type="password" id="loginPassword" placeholder="Password">
+            <button onclick="register()">📝 Create New Account</button>
+            <button onclick="login()" style="background: #48bb78;">🔓 Login to Dashboard</button>
+        </div>
+        
+        <!-- Dashboard -->
+        <div id="dashboard" class="dashboard">
+            <!-- Reminder Banner -->
+            <div id="reminderBanner" class="reminder-banner">
+                <h4>⏰ Missed Habit Reminder!</h4>
+                <div id="reminderText"></div>
+                <button onclick="showMissedHabits()">View Missed Habits</button>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="nav-btn active" onclick="showSection('dashboard')">📊 Home</button>
+                <button class="nav-btn" onclick="showSection('habits')">✅ Habits</button>
+                <button class="nav-btn" onclick="showSection('monthly')">📅 Monthly</button>
+                <button class="nav-btn" onclick="showSection('achievements')">🏆 Achievements</button>
+                <button class="nav-btn" onclick="showMissedHabits()">⏰ Missed</button>
+                <button class="nav-btn" onclick="logout()">🚪 Exit</button>
+            </div>
+            
+            <!-- Main Dashboard Section -->
+            <div id="dashboardSection">
+                <!-- Welcome Header -->
+                <div class="dashboard-widget animate-in">
+                    <div class="flex-stats">
+                        <div>
+                            <h2>Welcome, <span id="userName"></span>! 👋</h2>
+                            <p>Your habit journey continues</p>
+                        </div>
+                        <div>
+                            <span class="badge badge-gold" id="userLevelBadge"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button onclick="exportToPDF()" class="btn-pdf">📄 Export PDF Report</button>
+                    <button onclick="showMissedHabits()" class="btn-reminder">⏰ Missed Reminders</button>
+                </div>
+                
+                <!-- Key Stats Grid -->
+                <div class="stats-grid" id="mainStatsGrid"></div>
+                
+                <!-- Progress Overview -->
+                <div class="dashboard-widget">
+                    <h3>📈 Overall Progress</h3>
+                    <div id="overviewProgress"></div>
+                </div>
+                
+                <!-- Weekly Trend Analysis -->
+                <div class="dashboard-widget">
+                    <h3>📊 Weekly Trend</h3>
+                    <div id="weeklyTrend"></div>
+                </div>
+                
+                <!-- Best & Worst Habits -->
+                <div class="dashboard-widget">
+                    <h3>⭐ Best & Worst Habits</h3>
+                    <div id="bestWorstHabits"></div>
+                </div>
+                
+                <!-- AI Insights -->
+                <div class="dashboard-widget" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                    <h3 style="color: white;">🧠 AI Insights</h3>
+                    <div id="aiInsightsDashboard"></div>
+                </div>
+            </div>
+            
+            <!-- Habits Section -->
+            <div id="habitsSection" style="display:none;">
+                <button onclick="showAddHabitModal()" style="background: #48bb78;">➕ Add New Habit</button>
+                <div id="habitsList"></div>
+            </div>
+            
+            <!-- Monthly Analysis Section -->
+            <div id="monthlySection" style="display:none;">
+                <div class="dashboard-widget">
+                    <div class="flex-stats">
+                        <h3>📅 Monthly Analysis</h3>
+                        <select id="monthSelector" onchange="loadMonthlyAnalysis()" style="width: auto; min-width: 130px;">
+                            <option value="0">Current Month</option>
+                            <option value="1">Last Month</option>
+                            <option value="2">2 Months Ago</option>
+                            <option value="3">3 Months Ago</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="dashboard-widget">
+                    <h3>📊 Monthly Summary</h3>
+                    <div id="monthlySummary"></div>
+                </div>
+                
+                <div class="dashboard-widget">
+                    <h3>📋 Detailed Table</h3>
+                    <div style="overflow-x: auto;">
+                        <table class="analysis-table" id="monthlyAnalysisTable">
+                            <thead>
+                                <tr><th>Date</th><th>Day</th><th>Habit</th><th>Status</th><th>XP</th></tr>
+                            </thead>
+                            <tbody id="monthlyTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="dashboard-widget">
+                    <h3>📈 Monthly Trends</h3>
+                    <div id="monthlyTrends"></div>
+                </div>
+            </div>
+            
+            <!-- Missed Habits Section -->
+            <div id="missedSection" style="display:none;">
+                <div class="dashboard-widget">
+                    <h3>⏰ Missed Habits</h3>
+                    <div id="missedHabitsList"></div>
+                </div>
+            </div>
+            
+            <!-- Achievements Section -->
+            <div id="achievementsSection" style="display:none;">
+                <div class="dashboard-widget">
+                    <h3>🏆 Your Achievements</h3>
+                    <div id="achievementsList"></div>
+                </div>
+                
+                <div class="dashboard-widget">
+                    <h3>👑 Leaderboard</h3>
+                    <div id="leaderboardList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Habit Modal -->
+    <div id="habitModal" class="modal">
+        <div class="modal-content">
+            <h2>Add New Habit</h2>
+            <input type="text" id="habitName" placeholder="Habit name (e.g., Drink Water)">
+            <select id="habitDifficulty">
+                <option value="easy">Easy (+5 XP)</option>
+                <option value="medium" selected>Medium (+10 XP)</option>
+                <option value="hard">Hard (+20 XP)</option>
+            </select>
+            <button onclick="addHabit()">Create Habit</button>
+            <button onclick="closeModal()" style="background: #ccc;">Cancel</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <script>
+        // ============ DATA STORAGE ============
+        let currentUser = null;
+        let users = JSON.parse(localStorage.getItem('users') || '[]');
+        let habits = JSON.parse(localStorage.getItem('habits') || '[]');
+        let habitLogs = JSON.parse(localStorage.getItem('habitLogs') || '[]');
+        
+        // Achievements data
+        const achievements = [
+            { id: 1, name: "First Step", desc: "Complete your first habit", icon: "🎯", requirement: 1, reward: 50 },
+            { id: 2, name: "7 Day Streak", desc: "Complete habits for 7 days straight", icon: "🔥", requirement: 7, reward: 150 },
+            { id: 3, name: "Hero", desc: "14 day streak", icon: "🦸", requirement: 14, reward: 300 },
+            { id: 4, name: "Champion", desc: "Complete 30 habits total", icon: "🏆", requirement: 30, reward: 500 },
+            { id: 5, name: "XP Master", desc: "Earn 1000 XP", icon: "⭐", requirement: 1000, reward: 100 }
+        ];
+        
+        let userAchievements = JSON.parse(localStorage.getItem('userAchievements') || '[]');
+        
+        function saveData() {
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('habits', JSON.stringify(habits));
+            localStorage.setItem('habitLogs', JSON.stringify(habitLogs));
+            localStorage.setItem('userAchievements', JSON.stringify(userAchievements));
+        }
+        
+        // ============ AUTHENTICATION ============
+        function register() {
+            const name = document.getElementById('loginName').value;
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!name || !email || !password) {
+                showMessage('loginMessage', 'Please fill all fields!', 'error');
+                return;
+            }
+            
+            if (users.find(u => u.email === email)) {
+                showMessage('loginMessage', 'Email already exists!', 'error');
+                return;
+            }
+            
+            const newUser = {
+                id: Date.now(),
+                name: name,
+                email: email,
+                password: password,
+                xp: 0,
+                level: 1,
+                createdAt: new Date().toISOString()
+            };
+            
+            users.push(newUser);
+            saveData();
+            showMessage('loginMessage', 'Account created! Please login.', 'success');
+            
+            document.getElementById('loginName').value = '';
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+        }
+        
+        function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (!user) {
+                showMessage('loginMessage', 'Invalid email or password!', 'error');
+                return;
+            }
+            
+            currentUser = user;
+            document.getElementById('loginBox').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            
+            renderDashboard();
+            checkMissedReminders();
+        }
+        
+        function logout() {
+            currentUser = null;
+            document.getElementById('loginBox').style.display = 'block';
+            document.getElementById('dashboard').style.display = 'none';
+        }
+        
+        function showMessage(elementId, message, type) {
+            const el = document.getElementById(elementId);
+            el.innerHTML = `<div class="message ${type}">${message}</div>`;
+            setTimeout(() => { el.innerHTML = ''; }, 3000);
+        }
+        
+        // ============ MISSED REMINDERS ============
+        function checkMissedReminders() {
+            if (!currentUser) return;
+            
+            const userHabits = habits.filter(h => h.userId === currentUser.id);
+            const today = new Date().toISOString().split('T')[0];
+            const missedHabits = [];
+            
+            userHabits.forEach(habit => {
+                const completedToday = habitLogs.some(log => 
+                    log.habitId === habit.id && 
+                    log.userId === currentUser.id && 
+                    log.date === today
+                );
+                if (!completedToday) {
+                    missedHabits.push(habit);
+                }
+            });
+            
+            const reminderBanner = document.getElementById('reminderBanner');
+            const reminderText = document.getElementById('reminderText');
+            
+            if (missedHabits.length > 0) {
+                reminderText.innerHTML = `You have ${missedHabits.length} habit(s) pending for today!`;
+                reminderBanner.classList.add('show');
+                
+                // Also show alert for important reminder
+                const lastShown = localStorage.getItem(`reminder_${currentUser.id}_${today}`);
+                if (!lastShown && missedHabits.length > 0) {
+                    setTimeout(() => {
+                        alert(`⏰ Reminder: You have ${missedHabits.length} habit(s) to complete today!\n\n${missedHabits.map(h => `• ${h.name}`).join('\n')}`);
+                    }, 500);
+                    localStorage.setItem(`reminder_${currentUser.id}_${today}`, 'true');
+                }
+            } else {
+                reminderBanner.classList.remove('show');
+            }
+        }
+        
+        function showMissedHabits() {
+            const userHabits = habits.filter(h => h.userId === currentUser.id);
+            const today = new Date().toISOString().split('T')[0];
+            const missedHabits = [];
+            
+            userHabits.forEach(habit => {
+                const completedToday = habitLogs.some(log => 
+                    log.habitId === habit.id && 
+                    log.userId === currentUser.id && 
+                    log.date === today
+                );
+                if (!completedToday) {
+                    missedHabits.push(habit);
+                }
+            });
+            
+            const missedHtml = missedHabits.map(habit => `
+                <div class="habit-card" style="border-left: 4px solid #f56565;">
+                    <div>
+                        <strong>⚠️ ${habit.name}</strong>
+                        <div style="font-size: 12px; color: #666;">Not completed today! +${habit.xpReward} XP available</div>
+                    </div>
+                    <button class="complete-btn" onclick="completeHabit(${habit.id}); setTimeout(() => showMissedHabits(), 500);">✔️ Complete Now</button>
+                </div>
+            `).join('');
+            
+            document.getElementById('missedHabitsList').innerHTML = missedHtml || '<p style="text-align:center; padding:20px;">🎉 No missed habits! Great job staying consistent!</p>';
+            
+            // Show missed section
+            document.getElementById('dashboardSection').style.display = 'none';
+            document.getElementById('habitsSection').style.display = 'none';
+            document.getElementById('monthlySection').style.display = 'none';
+            document.getElementById('achievementsSection').style.display = 'none';
+            document.getElementById('missedSection').style.display = 'block';
+            
+            // Update active button style
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+        
+        // ============ HABIT MANAGEMENT ============
+        function showAddHabitModal() {
+            document.getElementById('habitModal').style.display = 'flex';
+        }
+        
+        function closeModal() {
+            document.getElementById('habitModal').style.display = 'none';
+            document.getElementById('habitName').value = '';
+        }
+        
+        function addHabit() {
+            const name = document.getElementById('habitName').value;
+            const difficulty = document.getElementById('habitDifficulty').value;
+            
+            if (!name) {
+                alert('Please enter habit name');
+                return;
+            }
+            
+            const xpReward = difficulty === 'easy' ? 5 : difficulty === 'medium' ? 10 : 20;
+            
+            const newHabit = {
+                id: Date.now(),
+                userId: currentUser.id,
+                name: name,
+                difficulty: difficulty,
+                xpReward: xpReward,
+                createdAt: new Date().toISOString(),
+                color: ['#667eea', '#48bb78', '#ed8936', '#9f7aea', '#f687b3'][Math.floor(Math.random() * 5)]
+            };
+            
+            habits.push(newHabit);
+            saveData();
+            closeModal();
+            renderDashboard();
+        }
+        
+        function completeHabit(habitId) {
+            const today = new Date().toISOString().split('T')[0];
+            
+            const alreadyCompleted = habitLogs.some(log => 
+                log.habitId === habitId && 
+                log.userId === currentUser.id && 
+                log.date === today
+            );
+            
+            if (alreadyCompleted) {
+                alert('Habit already completed today! 🎉');
+                return;
+            }
+            
+            const habit = habits.find(h => h.id === habitId);
+            
+            habitLogs.push({
+                id: Date.now(),
+                habitId: habitId,
+                userId: currentUser.id,
+                date: today,
+                status: 'completed'
+            });
+            
+            currentUser.xp += habit.xpReward;
+            
+            const newLevel = Math.floor(currentUser.xp / 100) + 1;
+            if (newLevel > currentUser.level) {
+                alert(`🎉 LEVEL UP! You are now Level ${newLevel}!`);
+                currentUser.level = newLevel;
+            }
+            
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            users[userIndex] = currentUser;
+            
+            saveData();
+            renderDashboard();
+            checkMissedReminders();
+            showFloatingXP(habit.xpReward);
+        }
+        
+        function showFloatingXP(xp) {
+            const notification = document.createElement('div');
+            notification.innerHTML = `+${xp} XP ✨`;
+            notification.style.position = 'fixed';
+            notification.style.bottom = '80px';
+            notification.style.right = '20px';
+            notification.style.background = '#48bb78';
+            notification.style.color = 'white';
+            notification.style.padding = '12px 20px';
+            notification.style.borderRadius = '12px';
+            notification.style.fontWeight = 'bold';
+            notification.style.zIndex = '1000';
+            notification.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
+            notification.style.animation = 'slideIn 0.3s ease';
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 2000);
+        }
+        
+        // ============ PDF EXPORT ============
+        function exportToPDF() {
+            const stats = calculateStats();
+            const userHabits = habits.filter(h => h.userId === currentUser.id);
+            const userLogs = habitLogs.filter(l => l.userId === currentUser.id);
+            const userAchievementsList = userAchievements.filter(ua => ua.userId === currentUser.id);
+            
+            const todayDate = new Date().toLocaleDateString();
+            
+            const reportHtml = `
+                <div style="padding: 30px; font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto;">
+                    <h1 style="color: #667eea; text-align: center;">HabitFlow Pro - Progress Report</h1>
+                    <p style="text-align: center; color: #666;">Generated on: ${todayDate}</p>
+                    <hr style="margin: 20px 0;">
+                    
+                    <h2 style="color: #667eea;">User Information</h2>
+                    <p><strong>Name:</strong> ${currentUser.name}</p>
+                    <p><strong>Email:</strong> ${currentUser.email}</p>
+                    <p><strong>Member Since:</strong> ${new Date(currentUser.createdAt).toLocaleDateString()}</p>
+                    
+                    <h2 style="color: #667eea; margin-top: 30px;">Statistics Summary</h2>
+                    <table style="width: 100%; border-collapse: collapse; background: #f7f7f7;">
+                        <tr><td style="padding: 10px; border: 1px solid #ddd;"><strong>Today's Progress</strong></td><td style="padding: 10px; border: 1px solid #ddd;">${stats.todayRate}%</td></tr>
+                        <tr><td style="padding: 10px; border: 1px solid #ddd;"><strong>Current Streak</strong></td><td style="padding: 10px; border: 1px solid #ddd;">${stats.currentStreak} days</td></tr>
+                        <tr><td style="padding: 10px; border: 1px solid #ddd;"><strong>Best Streak</strong></td><td style="padding: 10px; border: 1px solid #ddd;">${stats.bestStreak} days</td></tr>
+                        <tr><td style="padding: 10px; border: 1px solid #ddd;"><strong>Completion Rate</strong></td><td style="padding: 10px; border: 1px solid #ddd;">${stats.completionRate}%</td></tr>
+                        <tr><td style="padding: 10px; border: 1px solid #ddd;"><strong>Productivity Score</strong></td><td style="padding: 10px; border: 1px solid #ddd;">${stats.productivityScore}/100</td></tr>
+                        <tr><td style="padding: 10px; border: 1px solid #ddd;"><strong>Total XP</strong></td><td style="padding: 10px; border: 1px solid #ddd;">${stats.totalXP}</td></tr>
+                        <tr><td style="padding: 10px; border: 1px solid #ddd;"><strong>Level</strong></td><td style="padding: 10px; border: 1px solid #ddd;">${stats.level}</td></tr>
+                        <tr><td style="padding: 10px; border: 1px solid #ddd;"><strong>Total Habits</strong></td><td style="padding: 10px; border: 1px solid #ddd;">${stats.totalHabits}</td></tr>
+                        <tr><td style="padding: 10px; border: 1px solid #ddd;"><strong>Total Completions</strong></td><td style="padding: 10px; border: 1px solid #ddd;">${stats.totalCompletions}</td></tr>
+                    </table>
+                    
+                    <h2 style="color: #667eea; margin-top: 30px;">Your Habits</h2>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead><tr style="background: #667eea; color: white;"><th style="padding: 10px;">Habit Name</th><th style="padding: 10px;">Difficulty</th><th style="padding: 10px;">Total Completions</th></tr></thead>
+                        <tbody>
+                            ${userHabits.map(habit => {
+                                const completions = userLogs.filter(l => l.habitId === habit.id).length;
+                                return `<tr><td style="padding: 10px; border-bottom: 1px solid #ddd;">${habit.name}</td><td style="padding: 10px; border-bottom: 1px solid #ddd;">${habit.difficulty}</td><td style="padding: 10px; border-bottom: 1px solid #ddd;">${completions}</td></tr>`;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                    
+                    <h2 style="color: #667eea; margin-top: 30px;">Achievements Unlocked</h2>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead><tr style="background: #f093fb; color: white;"><th style="padding: 10px;">Achievement</th><th style="padding: 10px;">Date Earned</th></tr></thead>
+                        <tbody>
+                            ${userAchievementsList.map(ua => {
+                                const ach = achievements.find(a => a.id === ua.achievementId);
+                                return `<tr><td style="padding: 10px; border-bottom: 1px solid #ddd;">${ach ? ach.name : 'Unknown'} ${ach ? ach.icon : ''}</td><td style="padding: 10px; border-bottom: 1px solid #ddd;">${new Date(ua.earnedAt).toLocaleDateString()}</td></tr>`;
+                            }).join('') || '<tr><td colspan="2" style="padding: 10px;">No achievements yet. Keep going!</td></tr>'}
+                        </tbody>
+                    </table>
+                    
+                    <hr style="margin: 30px 0;">
+                    <p style="text-align: center; color: #666;">Report generated by HabitFlow Pro - Keep building better habits! 💪</p>
+                </div>
+            `;
+            
+            const element = document.createElement('div');
+            element.innerHTML = reportHtml;
+            document.body.appendChild(element);
+            
+            html2pdf().from(element).set({
+                margin: 0.5,
+                filename: `habit_report_${currentUser.name}_${new Date().toISOString().split('T')[0]}.pdf`,
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            }).save().then(() => {
+                document.body.removeChild(element);
+                showMessage('dashboardSection', '✅ PDF Report Downloaded!', 'success');
+            });
+        }
+        
+        // ============ STATISTICS CALCULATIONS ============
+        function calculateStats() {
+            const userLogs = habitLogs.filter(log => log.userId === currentUser.id);
+            const userHabits = habits.filter(h => h.userId === currentUser.id);
+            
+            const today = new Date().toISOString().split('T')[0];
+            const todayCompletions = userLogs.filter(log => log.date === today).length;
+            const totalPossibleToday = userHabits.length;
+            const todayRate = totalPossibleToday > 0 ? (todayCompletions / totalPossibleToday) * 100 : 0;
+            
+            // Calculate streak
+            let currentStreak = 0;
+            let bestStreak = 0;
+            let streak = 0;
+            let lastDate = null;
+            
+            const allDates = [...new Set(userLogs.map(l => l.date))].sort();
+            
+            for (let i = 0; i < allDates.length; i++) {
+                const date = allDates[i];
+                const logsOnDate = userLogs.filter(l => l.date === date).length;
+                const habitsOnDate = userHabits.length;
+                const allCompleted = logsOnDate === habitsOnDate && habitsOnDate > 0;
+                
+                if (allCompleted) {
+                    if (lastDate) {
+                        const diff = (new Date(date) - new Date(lastDate)) / (1000 * 60 * 60 * 24);
+                        if (diff === 1) streak++;
+                        else streak = 1;
+                    } else streak = 1;
+                    
+                    if (streak > currentStreak) currentStreak = streak;
+                    if (streak > bestStreak) bestStreak = streak;
+                    lastDate = date;
+                } else {
+                    streak = 0;
+                }
+            }
+            
+            const totalCompletions = userLogs.length;
+            
+            // Last 30 days completion rate
+            const last30Days = [...Array(30)].map((_, i) => {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                return date.toISOString().split('T')[0];
+            });
+            
+            let totalPossible = 0;
+            let totalCompleted = 0;
+            
+            last30Days.forEach(date => {
+                const completions = userLogs.filter(l => l.date === date).length;
+                const possible = userHabits.length;
+                totalPossible += possible;
+                totalCompleted += completions;
+            });
+            
+            const completionRate = totalPossible > 0 ? (totalCompleted / totalPossible) * 100 : 0;
+            const productivityScore = Math.min(Math.round(completionRate * (1 + currentStreak / 100)), 100);
+            
+            const xpForNextLevel = (currentUser.level * 100) - currentUser.xp;
+            
+            return {
+                todayRate: Math.round(todayRate),
+                currentStreak: currentStreak,
+                bestStreak: bestStreak,
+                totalCompletions: totalCompletions,
+                completionRate: Math.round(completionRate),
+                productivityScore: productivityScore,
+                totalXP: currentUser.xp,
+                level: currentUser.level,
+                xpToNextLevel: xpForNextLevel > 0 ? xpForNextLevel : 0,
+                totalHabits: userHabits.length
+            };
+        }
+        
+        function getHabitSuccessRates() {
+            const userHabits = habits.filter(h => h.userId === currentUser.id);
+            const userLogs = habitLogs.filter(log => log.userId === currentUser.id);
+            
+            return userHabits.map(habit => {
+                const habitLogs_ = userLogs.filter(log => log.habitId === habit.id);
+                const totalDays = habitLogs_.length;
+                const completedDays = habitLogs_.filter(log => log.status === 'completed').length;
+                const successRate = totalDays > 0 ? (completedDays / totalDays) * 100 : 0;
+                
+                return {
+                    ...habit,
+                    successRate: Math.round(successRate),
+                    totalCompletions: totalDays
+                };
+            });
+        }
+        
+        function getWeeklyData() {
+            const userLogs = habitLogs.filter(log => log.userId === currentUser.id);
+            const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const weeklyStats = {};
+            
+            weekDays.forEach(day => { weeklyStats[day] = { total: 0, completed: 0 }; });
+            
+            userLogs.forEach(log => {
+                const date = new Date(log.date);
+                const dayName = weekDays[date.getDay()];
+                weeklyStats[dayName].total++;
+                if (log.status === 'completed') weeklyStats[dayName].completed++;
+            });
+            
+            return weeklyStats;
+        }
+        
+        function checkAchievements() {
+            const stats = calculateStats();
+            const earned = [];
+            
+            for (const achievement of achievements) {
+                const alreadyEarned = userAchievements.some(ua => ua.userId === currentUser.id && ua.achievementId === achievement.id);
+                
+                if (!alreadyEarned) {
+                    let earned_ = false;
+                    
+                    if (achievement.id === 1 && stats.totalCompletions >= 1) earned_ = true;
+                    else if (achievement.id === 2 && stats.currentStreak >= 7) earned_ = true;
+                    else if (achievement.id === 3 && stats.currentStreak >= 14) earned_ = true;
+                    else if (achievement.id === 4 && stats.totalCompletions >= 30) earned_ = true;
+                    else if (achievement.id === 5 && currentUser.xp >= 1000) earned_ = true;
+                    
+                    if (earned_) {
+                        userAchievements.push({
+                            userId: currentUser.id,
+                            achievementId: achievement.id,
+                            earnedAt: new Date().toISOString()
+                        });
+                        currentUser.xp += achievement.reward;
+                        earned.push(achievement);
+                        
+                        setTimeout(() => {
+                            alert(`🎉 New Achievement Unlocked: ${achievement.name}!\n+${achievement.reward} XP Earned!`);
+                        }, 100);
+                    }
+                }
+            }
+            
+            if (earned.length > 0) {
+                const userIndex = users.findIndex(u => u.id === currentUser.id);
+                users[userIndex] = currentUser;
+                saveData();
+            }
+        }
+        
+        // ============ MONTHLY ANALYSIS ============
+        function loadMonthlyAnalysis() {
+            const monthOffset = parseInt(document.getElementById('monthSelector').value);
+            const targetDate = new Date();
+            targetDate.setMonth(targetDate.getMonth() - monthOffset);
+            const year = targetDate.getFullYear();
+            const month = targetDate.getMonth();
+            
+            const startDate = new Date(year, month, 1);
+            const endDate = new Date(year, month + 1, 0);
+            
+            const userHabits = habits.filter(h => h.userId === currentUser.id);
+            const userLogs = habitLogs.filter(log => log.userId === currentUser.id);
+            
+            const datesInMonth = [];
+            for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+                datesInMonth.push(new Date(d).toISOString().split('T')[0]);
+            }
+            
+            const tableData = [];
+            let totalCompletions = 0;
+            let totalPossible = 0;
+            
+            datesInMonth.forEach(date => {
+                userHabits.forEach(habit => {
+                    const isCompleted = userLogs.some(log => log.habitId === habit.id && log.date === date);
+                    
+                    tableData.push({
+                        date: date,
+                        day: new Date(date).toLocaleDateString('en', { weekday: 'short' }),
+                        habitName: habit.name,
+                        status: isCompleted ? '✅' : '❌',
+                        xp: isCompleted ? habit.xpReward : 0
+                    });
+                    
+                    if (isCompleted) totalCompletions++;
+                    totalPossible++;
+                });
+            });
+            
+            const tableBody = document.getElementById('monthlyTableBody');
+            tableBody.innerHTML = tableData.map(row => `
+                <tr>
+                    <td>${row.date}</td>
+                    <td>${row.day}</td>
+                    <td>${row.habitName}</td>
+                    <td class="${row.status === '✅' ? 'completed-cell' : 'missed-cell'}">${row.status}</td>
+                    <td>${row.xp}</td>
+                </tr>
+            `).join('');
+            
+            const completionRate = totalPossible > 0 ? (totalCompletions / totalPossible) * 100 : 0;
+            const summaryHtml = `
+                <div class="stats-grid">
+                    <div class="stat-card"><h3>Total Completions</h3><div class="value">${totalCompletions}</div></div>
+                    <div class="stat-card"><h3>Total Possible</h3><div class="value">${totalPossible}</div></div>
+                    <div class="stat-card"><h3>Completion Rate</h3><div class="value">${Math.round(completionRate)}%</div></div>
+                    <div class="stat-card"><h3>Total XP Earned</h3><div class="value">${totalCompletions * 10}</div></div>
+                </div>
+            `;
+            document.getElementById('monthlySummary').innerHTML = summaryHtml;
+            
+            const bestDay = {};
+            tableData.forEach(row => {
+                if (!bestDay[row.day]) bestDay[row.day] = { completed: 0, total: 0 };
+                bestDay[row.day].total++;
+                if (row.status === '✅') bestDay[row.day].completed++;
+            });
+            
+            const trendsHtml = Object.entries(bestDay).map(([day, data]) => `
+                <div style="margin: 10px 0;">
+                    <strong>${day}:</strong> ${data.completed}/${data.total} (${Math.round((data.completed/data.total)*100)}%)
+                    <div class="progress-bar-container"><div class="progress-bar-fill" style="width: ${(data.completed/data.total)*100}%"></div></div>
+                </div>
+            `).join('');
+            
+            document.getElementById('monthlyTrends').innerHTML = trendsHtml;
+        }
+        
+        // ============ RENDER FUNCTIONS ============
+        function renderDashboard() {
+            checkAchievements();
+            
+            document.getElementById('userName').innerHTML = currentUser.name;
+            document.getElementById('userLevelBadge').innerHTML = `⭐ Level ${currentUser.level} | ${currentUser.xp} XP`;
+            
+            const stats = calculateStats();
+            const habitRates = getHabitSuccessRates();
+            const weeklyStats = getWeeklyData();
+            
+            const mainStatsHtml = `
+                <div class="stat-card"><h3>Today's Progress</h3><div class="value">${stats.todayRate}%</div><div class="progress-bar-container"><div class="progress-bar-fill" style="width: ${stats.todayRate}%"></div></div></div>
+                <div class="stat-card"><h3>🔥 Current Streak</h3><div class="value">${stats.currentStreak} days</div><div>Best: ${stats.bestStreak}</div></div>
+                <div class="stat-card"><h3>📊 Completion Rate</h3><div class="value">${stats.completionRate}%</div></div>
+                <div class="stat-card"><h3>⚡ Productivity Score</h3><div class="value">${stats.productivityScore}</div><div>/100</div></div>
+                <div class="stat-card"><h3>⭐ Total XP</h3><div class="value">${stats.totalXP}</div><div>Level ${stats.level}</div><div class="progress-bar-container"><div class="progress-bar-fill" style="width: ${(stats.totalXP % 100)}%"></div></div></div>
+                <div class="stat-card"><h3>✅ Total Habits</h3><div class="value">${stats.totalHabits}</div></div>
+            `;
+            document.getElementById('mainStatsGrid').innerHTML = mainStatsHtml;
+            
+            const overviewHtml = `
+                <div class="flex-stats">
+                    <div><strong>Overall Completion:</strong> ${stats.completionRate}%</div>
+                    <div><strong>Next Level:</strong> ${stats.xpToNextLevel} XP needed</div>
+                </div>
+                <div class="progress-bar-container" style="margin-top: 12px;"><div class="progress-bar-fill" style="width: ${stats.completionRate}%"></div></div>
+            `;
+            document.getElementById('overviewProgress').innerHTML = overviewHtml;
+            
+            const weeklyHtml = Object.entries(weeklyStats).map(([day, data]) => `
+                <div style="margin: 8px 0;">
+                    <strong>${day}:</strong> ${data.completed} completions
+                    <div class="progress-bar-container"><div class="progress-bar-fill" style="width: ${data.total > 0 ? (data.completed/data.total)*100 : 0}%"></div></div>
+                </div>
+            `).join('');
+            document.getElementById('weeklyTrend').innerHTML = weeklyHtml || '<p>Complete habits to see trends!</p>';
+            
+            const sortedHabits = [...habitRates].sort((a, b) => b.successRate - a.successRate);
+            const bestHabit = sortedHabits[0];
+            const worstHabit = sortedHabits[sortedHabits.length - 1];
+            
+            const bestWorstHtml = `
+                <div style="display: flex; flex-wrap: wrap; gap: 15px;">
+                    <div style="flex: 1; background: #f0fff4; padding: 15px; border-radius: 12px;">
+                        <strong style="color: #48bb78;">🏆 Best</strong><br>
+                        ${bestHabit ? `${bestHabit.name} - ${bestHabit.successRate}%` : 'Complete habits!'}
+                    </div>
+                    <div style="flex: 1; background: #fff5f5; padding: 15px; border-radius: 12px;">
+                        <strong style="color: #f56565;">📉 Needs Work</strong><br>
+                        ${worstHabit && worstHabit.successRate < 100 ? `${worstHabit.name} - ${worstHabit.successRate}%` : 'Great job!'}
+                    </div>
+                </div>
+            `;
+            document.getElementById('bestWorstHabits').innerHTML = bestWorstHtml;
+            
+            let insightMessage = '';
+            if (stats.completionRate >= 80) insightMessage = '🎉 Outstanding! You are a habit master!';
+            else if (stats.completionRate >= 60) insightMessage = '📈 Great progress! Keep building momentum!';
+            else if (stats.completionRate >= 40) insightMessage = '💪 Good effort! Start with one habit at a time.';
+            else insightMessage = '🌟 Every journey begins with a single step! Start today!';
+            
+            const aiHtml = `
+                <div style="font-size: 16px; margin-bottom: 8px;">${insightMessage}</div>
+                <div>${stats.currentStreak > 0 ? `🔥 ${stats.currentStreak} day streak! Don't break it!` : '✨ Start a streak today!'}</div>
+                <div style="margin-top: 8px;">💡 ${stats.bestStreak > 0 ? `Your best streak is ${stats.bestStreak} days!` : 'Consistency is key!'}</div>
+            `;
+            document.getElementById('aiInsightsDashboard').innerHTML = aiHtml;
+            
+            const today = new Date().toISOString().split('T')[0];
+            const habitsHtml = habits.filter(h => h.userId === currentUser.id).map(habit => {
+                const isCompleted = habitLogs.some(log => log.habitId === habit.id && log.userId === currentUser.id && log.date === today);
+                return `
+                    <div class="habit-card" style="border-left: 4px solid ${habit.color}">
+                        <div>
+                            <strong>${habit.name}</strong>
+                            <div style="font-size: 12px; color: #666;">+${habit.xpReward} XP | ${habit.difficulty}</div>
+                        </div>
+                        <button class="complete-btn ${isCompleted ? 'completed' : ''}" onclick="completeHabit(${habit.id})" ${isCompleted ? 'disabled' : ''}>
+                            ${isCompleted ? '✅ Done' : '✔️ Complete'}
+                        </button>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('habitsList').innerHTML = habitsHtml || '<p class="text-center">No habits yet. Add your first habit! 🎯</p>';
+            
+            const achievementsHtml = achievements.map(ach => {
+                const earned = userAchievements.some(ua => ua.userId === currentUser.id && ua.achievementId === ach.id);
+                return `
+                    <div class="achievement" style="${earned ? '' : 'opacity: 0.5; background: #ccc;'}">
+                        <div style="font-size: 32px;">${ach.icon}</div>
+                        <div><strong>${ach.name}</strong></div>
+                        <div style="font-size: 10px;">${ach.desc}</div>
+                        ${earned ? '<div style="margin-top: 5px; font-size: 11px;">✅ Unlocked</div>' : '<div style="margin-top: 5px; font-size: 11px;">🔒 Locked</div>'}
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('achievementsList').innerHTML = achievementsHtml;
+            
+            const leaderboard = [...users].sort((a, b) => b.xp - a.xp).slice(0, 10);
+            const leaderboardHtml = leaderboard.map((user, idx) => `
+                <div style="display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #e2e8f0;">
+                    <span>${idx + 1}. ${user.name}</span>
+                    <span><strong>${user.xp} XP</strong></span>
+                </div>
+            `).join('');
+            document.getElementById('leaderboardList').innerHTML = leaderboardHtml || '<p>No users yet!</p>';
+            
+            if (document.getElementById('monthlySection').style.display !== 'none') {
+                loadMonthlyAnalysis();
+            }
+        }
+        
+        function showSection(section) {
+            document.getElementById('dashboardSection').style.display = section === 'dashboard' ? 'block' : 'none';
+            document.getElementById('habitsSection').style.display = section === 'habits' ? 'block' : 'none';
+            document.getElementById('monthlySection').style.display = section === 'monthly' ? 'block' : 'none';
+            document.getElementById('achievementsSection').style.display = section === 'achievements' ? 'block' : 'none';
+            document.getElementById('missedSection').style.display = 'none';
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            if (event && event.target) event.target.classList.add('active');
+            
+            if (section === 'monthly') loadMonthlyAnalysis();
+            if (section === 'dashboard' || section === 'achievements') renderDashboard();
+        }
+        
+        // Demo data
+        function addDemoData() {
+            if (users.length === 0) {
+                const demoUser = {
+                    id: 1,
+                    name: 'Demo User',
+                    email: 'demo@example.com',
+                    password: 'demo123',
+                    xp: 250,
+                    level: 2,
+                    createdAt: new Date().toISOString()
+                };
+                users.push(demoUser);
+                
+                const demoHabits = [
+                    { id: 101, userId: 1, name: 'Morning Water', difficulty: 'easy', xpReward: 5, color: '#48bb78' },
+                    { id: 102, userId: 1, name: 'Exercise', difficulty: 'medium', xpReward: 10, color: '#667eea' },
+                    { id: 103, userId: 1, name: 'Read Book', difficulty: 'medium', xpReward: 10, color: '#ed8936' }
+                ];
+                habits.push(...demoHabits);
+                
+                const dates = [];
+                for (let i = 1; i <= 20; i++) {
+                    const date = new Date();
+                    date.setDate(date.getDate() - i);
+                    dates.push(date.toISOString().split('T')[0]);
+                }
+                
+                demoHabits.forEach(habit => {
+                    dates.forEach(date => {
+                        if (Math.random() > 0.3) {
+                            habitLogs.push({
+                                id: Date.now() + Math.random(),
+                                habitId: habit.id,
+                                userId: 1,
+                                date: date,
+                                status: 'completed'
+                            });
+                        }
+                    });
+                });
+                
+                saveData();
+            }
+        }
+        
+        addDemoData();
+        
+        // Check reminders every hour
+        setInterval(() => {
+            if (currentUser) {
+                checkMissedReminders();
+            }
+        }, 3600000);
+    </script>
+</body>
+</html>
